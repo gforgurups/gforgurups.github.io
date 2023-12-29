@@ -104,7 +104,7 @@ def generateOpenAIContent(title):
     print("Image saved successfully")
     return response.choices[0].text,img_name
     
-
-content,img = generateOpenAIContent("Applications of LangChain in real world")
-create_new_blog("Test Title", content, img)
+title = "How to learn LangChain and GenAI?"
+content,img = generateOpenAIContent(title)
+create_new_blog(title, content, img)
 update_blog()
