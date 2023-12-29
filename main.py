@@ -10,6 +10,7 @@ PATH_TO_BLOG_REPO= Path("C:\\Users\\srgur\\OneDrive\\Desktop\\Guru\\LLM\\gforgur
 PATH_TO_BLOG = PATH_TO_BLOG_REPO.parent
 PATH_TO_CONTENT = PATH_TO_BLOG/"content"
 PATH_TO_CONTENT.mkdir(exist_ok=True, parents=True)
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 def update_blog(commit_msg='Updates blog'):
     repo = Repo(PATH_TO_BLOG_REPO)
@@ -58,8 +59,28 @@ def create_new_blog(title, content, cover_img):
             index.write(str(soup.prettify(formatter='html')))
             print("Index updated")
 
+def create_prompt(title):
+    prompt="""
+    Biography:
+    My name is Guru and I work as Associate Director for Wayfare India.
+    
+    Blog
+    Title: {}
+    Tags: Tech, Python, AI, GenAI, LLM, LangChain
+    Summary: I talk about applications of GenAI in real world scenarios
+    Full Text: """.format(title)
+    return prompt
 
+def generateOpenAIContent(title):
+    response = openai.Completion.create(
+        model='text-davinci-003',
+        prompt=create_prompt(title),
+        temperature=0.7,
+        max_tokens=1000
+     )
+    return response.choices[0].text
+    
 
-create_new_blog("Test Title", "Test Content", "logo.jpeg")
-
+content = generateOpenAIContent("Applications of LangChain")
+create_new_blog("Test Title", content, "logo.jpeg")
 update_blog()
